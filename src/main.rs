@@ -7,7 +7,7 @@ use spinners::{Spinner, Spinners};
 use std::env;
 use std::io;(stdin, stdout, write);
 
-#[derive(Deseralize, Debug)]
+#[derive(Deserialize, Debug)]
 struct OAIResponse{
     id: Option<String>,
     object:Option<String>,
@@ -23,3 +23,22 @@ struct  OAIChoices{
     logprobs: Option<u8>,
     finish_reason: String,
 }
+
+#[derive (Serialize, Debug)]
+struct OAIRequest{
+    prompt: String,
+    max_token: u16,
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error + send + sync>> {
+    dotenv().ok();
+
+    let https = HttpConnector::new();
+    let client = Client::builder().build(https);
+    let url = "https://api.openai.com/v1/engines/text-davinci-001/completions";
+    let preamble = "Generate a Sql code for the given statement";
+    let oai_token: String = env::var("OAI_TOKEN").unwrap();
+    let auth_header_val = format!("Bearer {}", oai_token);
+     
+} 
